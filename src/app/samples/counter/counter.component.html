@@ -1,7 +1,11 @@
 <ng-container *ngIf="state | async as s">
-    <input type="number" label="increment by" [value]="s.incrementBy"
-        (input)="action.next(actions.incrementBy($event))">
     <p>Counter value: {{s.currentValue}}</p>
-    <button (click)="action.next(actions.increment)">Increment</button>
-    <button (click)="action.next(actions.reset)">Reset</button>
+    <form>
+        <input type="number" label="increment by" [value]="s.incrementBy"
+            (input)="action.next(actions.incrementBy($event))">
+    </form>
+    <div class="actions">
+        <button (click)="action.next(actions.increment)">Increment</button>
+        <button (click)="action.next(actions.reset)">Reset</button>
+    </div>
 </ng-container>

@@ -1,5 +1,14 @@
 <ng-container *ngIf="state | async as s">
     <p>Edit form ({{s.type}})</p>
-    <input type="text" label="name" [value]="s.form.name">
-
+    <form>
+        <input type="text" label="name" [value]="s.form.name">
+        <input type="text" label="surname" [value]="s.form.surname">
+        <input type="datetime-local" label="birth" [value]="s.form.birth">
+        <input type="email" label="email" [value]="s.form.email">
+    </form>
+    <div class="actions">
+        <button (click)="action.next(actions.reset)">Reset</button>
+        <button>Reload</button>
+        <button>Save</button>
+    </div>
 </ng-container>
