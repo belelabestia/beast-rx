@@ -13,18 +13,13 @@ const initialForm: ViewForm = {
   email: '',
 } as const;
 
-type State =
-  | {
-      type: 'loading';
-      form: ViewForm;
-    }
-  | {
-      type: 'loaded';
-      form: ViewForm;
-    };
+interface State {
+  type: 'loading' | 'loaded' | 'reset';
+  form: ViewForm;
+}
 
-const init: Init<State> = (action) => {
-  getForm().subscribe((form) => action.next(actions.loaded(form)));
+const init: Init<State> = (stream) => {
+  getForm().subscribe((form) => stream.next(actions.loaded(form)));
 
   return {
     type: 'loading',
@@ -32,16 +27,15 @@ const init: Init<State> = (action) => {
   };
 };
 
-const actionRecord = {
+const actions = createActions<State>()({
+  reset: (): State => ({ type: 'reset', form: initialForm }),
   loaded:
     (form: Form) =>
     (_: State): State => ({
       type: 'loaded',
       form: viewForm(form) ?? initialForm,
     }),
-};
-
-const actions = createActions<State, typeof actionRecord>(actionRecord);
+});
 
 @Component({
   selector: '[edit-form]',

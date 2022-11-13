@@ -1,14 +1,18 @@
 <ng-container *ngIf="state | async as s">
     <p>Edit form ({{s.type}})</p>
     <form>
-        <input type="text" label="name" [value]="s.form.name">
-        <input type="text" label="surname" [value]="s.form.surname">
-        <input type="datetime-local" label="birth" [value]="s.form.birth">
-        <input type="email" label="email" [value]="s.form.email">
+        <label for="name">Name</label>
+        <input type="text" id="name" [value]="s.form.name">
+        <label for="surname">Surname</label>
+        <input type="text" id="surname" [value]="s.form.surname">
+        <label for="birth">Birth</label>
+        <input type="datetime-local" id="birth" [value]="s.form.birth">
+        <label for="email">Email</label>
+        <input type="email" id="email" [value]="s.form.email">
     </form>
     <div class="actions">
-        <button (click)="action.next(actions.reset)">Reset</button>
-        <button>Reload</button>
-        <button>Save</button>
+        <button [disabled]="s.type === 'loading'" (click)="stream.next(actions.reset)">Reset</button>
+        <button [disabled]="s.type === 'loading'">Reload</button>
+        <button [disabled]="s.type === 'loading'">Save</button>
     </div>
 </ng-container>
