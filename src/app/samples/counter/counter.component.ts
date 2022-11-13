@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { beastRx, createActions } from 'src/beast-rx/core';
+import { beastRx, createActions, Init } from 'src/beast-rx/core';
 
 interface State {
   incrementBy: number;
@@ -10,6 +10,8 @@ const initialState: State = {
   incrementBy: 1,
   currentValue: 0,
 };
+
+const init: Init<State> = (_) => initialState;
 
 const actionRecord = {
   incrementBy: (event: Event) => (state: State) => ({
@@ -30,4 +32,4 @@ const actions = createActions<State, typeof actionRecord>(actionRecord);
   templateUrl: './counter.component.html',
   styleUrls: ['./counter.component.css'],
 })
-export class CounterComponent extends beastRx(initialState, actions) {}
+export class CounterComponent extends beastRx(init, actions) {}
