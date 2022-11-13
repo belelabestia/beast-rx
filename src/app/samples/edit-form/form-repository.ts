@@ -37,9 +37,28 @@ export const viewForm: Creator<Form, ViewForm> = (form) => {
   return form as ViewForm;
 };
 
+export const form: Creator<ViewForm, Form> = (viewForm) => {
+  const form: Form = {
+    name: nonEmptyString(viewForm.name),
+    surname: nonEmptyString(viewForm.surname),
+    birth: viewForm.birth,
+    email: email(viewForm.email),
+  };
+
+  if (
+    form.birth === null ||
+    form.email === null ||
+    form.name === null ||
+    form.surname === null
+  )
+    return null;
+
+  return form;
+};
+
 const delay = 5000 as const;
 
-const mock: Form = {
+let mock: Form = {
   name: nonEmptyString('Mario'),
   surname: nonEmptyString('Rossi'),
   birth: new Date('1991-03-21'),
@@ -48,3 +67,10 @@ const mock: Form = {
 
 export const getForm: RepoAction<void, Form> = () =>
   timer(delay).pipe(map(() => mock));
+
+export const saveForm: RepoAction<Form, void> = (form: Form) =>
+  timer(delay).pipe(
+    map(() => {
+      mock = form;
+    })
+  );
