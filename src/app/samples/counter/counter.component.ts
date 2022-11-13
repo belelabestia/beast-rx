@@ -14,7 +14,7 @@ const initialState: State = {
 const actions = createActions<State>()({
   incrementBy: (event: Event) => (state: State) => ({
     ...state,
-    incrementBy: Number((event as InputEvent).data),
+    incrementBy: (event.target as HTMLInputElement).valueAsNumber,
   }),
   increment: (state: State) => ({
     ...state,

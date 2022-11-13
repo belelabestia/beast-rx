@@ -3,20 +3,20 @@
     <form>
         <label for="name">Name</label>
         <input type="text" id="name" [value]="s.form.name"
-            (input)="stream.next(actions.form({name: inputString($event)}))">
+            (input)="changes.next(actions.form({name: inputString($event)}))">
         <label for="surname">Surname</label>
         <input type="text" id="surname" [value]="s.form.surname"
-            (input)="stream.next(actions.form({surname: inputString($event)}))">
+            (input)="changes.next(actions.form({surname: inputString($event)}))">
         <label for="birth">Birth</label>
         <input type="datetime-local" id="birth" [value]="s.form.birth"
-            (input)="stream.next(actions.form({birth: inputDate($event)}))">
+            (input)="changes.next(actions.form({birth: inputDate($event)}))">
         <label for="email">Email</label>
         <input type="email" id="email" [value]="s.form.email"
-            (input)="stream.next(actions.form({email: inputString($event)}))">
+            (input)="changes.next(actions.form({email: inputString($event)}))">
     </form>
     <div class="actions">
-        <button [disabled]="s.type === 'loading'" (click)="stream.next(actions.reset)">Reset</button>
-        <button [disabled]="s.type === 'loading'" (click)="stream.next(actions.load)">Reload</button>
-        <button [disabled]="s.type !== 'updated'" (click)="stream.next(actions.save)">Save</button>
+        <button [disabled]="s.type === 'loading'" (click)="changes.next(actions.reset)">Reset</button>
+        <button [disabled]="s.type === 'loading'" (click)="changes.next(actions.load)">Reload</button>
+        <button [disabled]="s.type !== 'updated'" (click)="changes.next(actions.save)">Save</button>
     </div>
 </ng-container>

@@ -3,10 +3,10 @@
     <form>
         <label for="increment-by">Increment by</label>
         <input type="number" id="increment-by" [value]="s.incrementBy"
-            (input)="stream.next(actions.incrementBy($event))">
+            (input)="changes.next(actions.incrementBy($event))">
     </form>
     <div class="actions">
-        <button (click)="stream.next(actions.increment)">Increment</button>
-        <button (click)="stream.next(actions.reset)">Reset</button>
+        <button (click)="changes.next(actions.increment)">Increment</button>
+        <button (click)="changes.next(actions.reset)">Reset</button>
     </div>
 </ng-container>

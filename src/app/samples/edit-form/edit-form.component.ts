@@ -1,10 +1,9 @@
-import { state } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
 } from '@angular/core';
-import { beastRx, createActions, Init, Stream } from 'src/beast-rx/core';
+import { beastRx, createActions, Init, Changes } from 'src/beast-rx/core';
 import {
   form,
   Form,
@@ -28,8 +27,8 @@ interface State {
 
 const actions = createActions<State>()({
   reset: (): State => ({ type: 'reset', form: initialForm }),
-  load: (_, stream): State => {
-    getForm().subscribe((form) => stream.next(actions.loaded(form)));
+  load: (_, changes): State => {
+    getForm().subscribe((form) => changes.next(actions.loaded(form)));
 
     return {
       type: 'loading',
@@ -40,9 +39,9 @@ const actions = createActions<State>()({
     type: 'loaded',
     form: viewForm(form) ?? initialForm,
   }),
-  save: (state: State, stream: Stream<State>): State => {
+  save: (state: State, changes: Changes<State>): State => {
     const f = form(state.form);
-    if (f !== null) saveForm(f).subscribe(() => stream.next(actions.saved));
+    if (f !== null) saveForm(f).subscribe(() => changes.next(actions.saved));
 
     return {
       type: 'saving',
@@ -61,7 +60,7 @@ const actions = createActions<State>()({
     }),
 });
 
-const init: Init<State> = (stream) => actions.load(null!, stream);
+const init: Init<State> = (changes) => actions.load(null!, changes);
 
 @Component({
   selector: '[edit-form]',
@@ -70,10 +69,6 @@ const init: Init<State> = (stream) => actions.load(null!, stream);
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditFormComponent extends beastRx(init, actions) {
-  constructor(ref: ChangeDetectorRef) {
-    super(ref);
-  }
-
   inputString(event: Event): string | undefined {
     return (event.target as HTMLInputElement).value ?? undefined;
   }

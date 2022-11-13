@@ -1,35 +1,22 @@
 import { ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
-import {
-  map,
-  Observable,
-  scan,
-  startWith,
-  Subject,
-  Subscription,
-  tap,
-} from 'rxjs';
+import { Observable, scan, startWith, Subject, Subscription, tap } from 'rxjs';
 
-export interface Stream<State> extends Subject<Action<State>> {}
+export interface Changes<State> extends Subject<Action<State>> {}
+
+export interface Init<State> {
+  (changes: Subject<Action<State>>): State;
+}
 
 export interface Action<State> {
-  (state: State, stream: Stream<State>): State;
+  (state: State, changes: Changes<State>): State;
 }
 
 export interface ActionFactory<State> {
   (value: any): Action<State>;
 }
 
-// TODO
-// export interface Effect<State> {
-//   (action: Subject<Action<State>>): void;
-// }
-
 export interface ActionRecord<State> {
   [key: string]: Action<State> | ActionFactory<State>;
-}
-
-export interface Init<State> {
-  (actions: Subject<Action<State>>): State;
 }
 
 export const createActions =
@@ -41,28 +28,17 @@ export const beastRx = <State, T extends ActionRecord<State>>(
   init: Init<State>,
   actions: T
 ) => {
-  const stream = new Subject<Action<State>>();
-  const initialState = init(stream);
+  const changes = new Subject<Action<State>>();
+  const initialState = init(changes);
 
-  return class implements OnInit, OnDestroy {
-    private sub: Subscription | null = null;
+  return class {
     actions = actions;
-    stream = stream;
+    changes = changes;
 
-    state: Observable<State> = this.stream.pipe(
-      scan((state, action) => action(state, this.stream), initialState),
+    state: Observable<State> = changes.pipe(
+      scan((state, action) => action(state, this.changes), initialState),
       startWith(initialState),
       tap(console.log)
     );
-
-    constructor(private ref: ChangeDetectorRef | undefined) {}
-
-    ngOnInit(): void {
-      this.sub = this.state.subscribe(() => this.ref?.detectChanges());
-    }
-
-    ngOnDestroy(): void {
-      this.sub?.unsubscribe();
-    }
   };
 };
