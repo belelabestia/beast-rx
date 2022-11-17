@@ -1,9 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-} from '@angular/core';
-import { beastRx, createActions, Init, Changes } from 'src/beast-rx/core';
+import { Component } from '@angular/core';
+import { createActions, Init, Changes } from 'src/beast-rx/core';
 import {
   form,
   Form,
@@ -66,9 +62,8 @@ const init: Init<State> = (changes) => actions.load(null!, changes);
   selector: '[edit-form]',
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditFormComponent extends beastRx(init, actions) {
+export class EditFormComponent /* extends beastRx(init, actions) */ {
   inputString(event: Event): string | undefined {
     return (event.target as HTMLInputElement).value ?? undefined;
   }

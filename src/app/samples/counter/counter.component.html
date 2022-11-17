@@ -1,12 +1,12 @@
-<ng-container *ngIf="state | async as s">
+<ng-container *ngIf="rx.state | async as s">
     <p>Counter value: {{s.currentValue}}</p>
     <form>
         <label for="increment-by">Increment by</label>
         <input type="number" id="increment-by" [value]="s.incrementBy"
-            (input)="changes.next(actions.incrementBy($event))">
+            (input)="rx.changes.next(rx.actions.incrementBy($event))">
     </form>
     <div class="actions">
-        <button (click)="changes.next(actions.increment)">Increment</button>
-        <button (click)="changes.next(actions.reset)">Reset</button>
+        <button (click)="rx.changes.next(rx.actions.increment)">Increment</button>
+        <button (click)="rx.changes.next(rx.actions.reset)">Reset</button>
     </div>
 </ng-container>
