@@ -1,1 +1,3 @@
-<p>summary works!</p>
+<ng-container *ngIf="storage | async as s">
+    {{text(s)}}
+</ng-container>

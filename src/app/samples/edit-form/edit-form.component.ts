@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { BeastRx, provide } from 'src/beast-rx/core';
+import { AppState } from '../summary/summary.component';
 import { EditFormService, EditFormState } from './edit-form.service';
 
 @Component({
@@ -8,7 +9,8 @@ import { EditFormService, EditFormState } from './edit-form.service';
   styleUrls: ['./edit-form.component.css'],
   providers: provide<EditFormState, EditFormService>(
     (rx) => rx.service.load,
-    EditFormService
+    EditFormService,
+    (state) => ({ stocazzo: state })
   ),
 })
 export class EditFormComponent {

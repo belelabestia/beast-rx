@@ -8,7 +8,8 @@ import { CounterService, CounterState } from './counter.service';
   styleUrls: ['./counter.component.css'],
   providers: provide<CounterState, CounterService>(
     (rx) => rx.service.reset,
-    CounterService
+    CounterService,
+    (state) => ({ staminchia: state })
   ),
 })
 export class CounterComponent {
