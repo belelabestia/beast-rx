@@ -1,3 +1,4 @@
-<ng-container *ngIf="storage | async as s">
-    {{text(s)}}
+<h2>Summary</h2>
+<ng-container *ngIf="ctx.storage | async as s">
+    <pre>{{text(s)}}</pre>
 </ng-container>

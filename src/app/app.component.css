@@ -1,0 +1,27 @@
+:host {
+  display: grid;
+  grid-template:
+    "counter summary" 1fr
+    "edit-form summary" 1fr
+    / 1fr 1fr;
+  gap: 8px;
+}
+
+:host > * {
+  border: 1px solid lightgrey;
+  background-color: whitesmoke;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+[counter] {
+  grid-area: counter;
+}
+
+[edit-form] {
+  grid-area: edit-form;
+}
+
+[summary] {
+  grid-area: summary;
+}

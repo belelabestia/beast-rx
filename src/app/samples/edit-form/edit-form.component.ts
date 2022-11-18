@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
+import { AppState } from 'src/app/app.component';
 import { BeastRx, provide } from 'src/beast-rx/core';
-import { AppState } from '../summary/summary.component';
 import { EditFormService, EditFormState } from './edit-form.service';
 
 @Component({
   selector: '[edit-form]',
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.css'],
-  providers: provide<EditFormState, EditFormService>(
+  providers: provide<EditFormState, EditFormService, AppState>(
     (rx) => rx.service.load,
     EditFormService,
-    (state) => ({ stocazzo: state })
+    'editForm'
   ),
 })
 export class EditFormComponent {

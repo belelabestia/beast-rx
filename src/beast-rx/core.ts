@@ -1,4 +1,5 @@
 import {
+  ApplicationRef,
   ChangeDetectorRef,
   Inject,
   Injectable,
@@ -9,6 +10,7 @@ import {
   distinctUntilChanged,
   Observable,
   scan,
+  shareReplay,
   startWith,
   Subject,
   tap,
@@ -47,20 +49,12 @@ export interface Storage<State> {
   [key: string]: State;
 }
 
-export interface StorageSetter<State> {
-  (state: State): Storage<State>;
-}
-
 export const INIT = new InjectionToken<Action<any, any>>('INIT');
 export const SERVICE = new InjectionToken<ActionRecord<any, any>>('SERVICE');
-
-export const STORAGE = new InjectionToken<Subject<any> | null>('STORAGE', {
-  factory: () => null,
-});
-
-export const STORAGE_SETTER = new InjectionToken<string>('STORAGE_SETTER');
+export const FIELD = new InjectionToken<string>('FIELD');
 
 export const LOGGER = new InjectionToken<typeof console.log>('LOGGER', {
+  providedIn: 'root',
   factory: () => console.log,
 });
 
@@ -69,11 +63,10 @@ export const createActions =
   <A extends ActionRecord<State, Service>>(actionRecord: A): A =>
     actionRecord;
 
-export const provide = <State, Service>(
+export const provide = <State, Service, StorageState>(
   init: Init<State, Service>,
   service: Constructor<Service>,
-  storageSetter: (storage: Storage<State>) => void,
-  logger?: typeof console.log
+  field: keyof StorageState
 ): Provider[] => [
   {
     provide: INIT,
@@ -84,19 +77,15 @@ export const provide = <State, Service>(
     useClass: service,
   },
   {
-    provide: LOGGER,
-    useValue: logger,
-  },
-  {
-    provide: STORAGE_SETTER,
-    useValue: storageSetter,
+    provide: FIELD,
+    useValue: field,
   },
   BeastRx,
 ];
 
-export const provideStorage = <State>(instance: Subject<State>): Provider => ({
-  provide: STORAGE,
-  useValue: instance,
+export const provideLogger = (logger: typeof console.log) => ({
+  provide: LOGGER,
+  useFactory: () => logger ?? console.log,
 });
 
 @Injectable()
@@ -106,11 +95,11 @@ export class BeastRx<State, Service> {
 
   constructor(
     ref: ChangeDetectorRef,
+    public ctx: BeastCtx<Storage<State>> | null,
     @Inject(INIT) init: Init<State, Service>,
     @Inject(SERVICE) public service: Service,
     @Inject(LOGGER) public log: typeof console.log,
-    @Inject(STORAGE) public storage: Subject<Storage<State>> | null,
-    @Inject(STORAGE_SETTER) public storageSetter: StorageSetter<State>
+    @Inject(FIELD) public field: string
   ) {
     const changes = new Subject<Action<State, Service>>();
 
@@ -127,9 +116,14 @@ export class BeastRx<State, Service> {
       ),
       startWith(initialState),
       distinctUntilChanged(),
-      tap((state) => this.storage?.next(this.storageSetter(state))),
-      tap(() => setTimeout(() => ref.detectChanges())),
-      tap((state) => this.log(state))
+      tap((state) => {
+        this.log('BeastRx update: ', { state });
+
+        setTimeout(() => {
+          this.ctx?.dispatcher.next({ [this.field]: state });
+          ref.detectChanges();
+        });
+      })
     );
   }
 }
@@ -138,3 +132,19 @@ export const init =
   <State, Service>(state: State): ((_: ActionArgs<State, Service>) => State) =>
   () =>
     state;
+
+@Injectable()
+export class BeastCtx<State> {
+  dispatcher = new Subject<State>();
+
+  storage = this.dispatcher.pipe(
+    scan((acc, next) => ({ ...acc, ...next }), {} as State),
+    tap(() => setTimeout(() => this.ref.detectChanges())),
+    tap((state) => this.log('BeastCtx update: ', { state }))
+  );
+
+  constructor(
+    private ref: ChangeDetectorRef,
+    @Inject(LOGGER) public log: typeof console.log
+  ) {}
+}

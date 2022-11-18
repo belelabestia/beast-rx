@@ -16,7 +16,6 @@ export interface EditFormState {
 const initialForm: ViewForm = {
   name: '',
   surname: '',
-  birth: null,
   email: '',
 } as const;
 

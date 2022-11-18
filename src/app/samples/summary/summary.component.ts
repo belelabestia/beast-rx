@@ -1,26 +1,22 @@
 import { Component, Inject } from '@angular/core';
-import { Subject } from 'rxjs';
-import { provideStorage, STORAGE } from 'src/beast-rx/core';
+import { BeastCtx, LOGGER, Storage } from 'src/beast-rx/core';
 import { CounterState } from '../counter/counter.service';
 import { EditFormState } from '../edit-form/edit-form.service';
 
-export interface AppState {
+interface AppState extends Storage<CounterState | EditFormState> {
   counter: CounterState;
   editForm: EditFormState;
 }
 
 @Component({
-  selector: 'app-summary',
+  selector: '[summary]',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.css'],
-  providers: [provideStorage(new Subject<AppState>())],
 })
 export class SummaryComponent {
-  constructor(
-    @Inject(STORAGE) protected storage: Subject<Record<string, AppState>>
-  ) {}
+  constructor(protected ctx: BeastCtx<AppState>) {}
 
-  text(state: AppState) {
-    return JSON.stringify(state);
+  text(state: AppState): string {
+    return JSON.stringify(state, null, '  ');
   }
 }

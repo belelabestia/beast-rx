@@ -7,9 +7,6 @@
         <label for="surname">Surname</label>
         <input type="text" id="surname" [value]="s.form.surname"
             (input)="rx.changes.next(rx.service.form({surname: inputString($event)}))">
-        <label for="birth">Birth</label>
-        <input type="datetime-local" id="birth" [value]="s.form.birth"
-            (input)="rx.changes.next(rx.service.form({birth: inputDate($event)}))">
         <label for="email">Email</label>
         <input type="email" id="email" [value]="s.form.email"
             (input)="rx.changes.next(rx.service.form({email: inputString($event)}))">
