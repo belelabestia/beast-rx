@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { map, Observable, timer } from 'rxjs';
 import { Creator } from 'src/beast-rx/brand';
 import {
@@ -56,7 +57,7 @@ export const form: Creator<ViewForm, Form> = (viewForm) => {
   return form;
 };
 
-const delay = 5000 as const;
+const delay = 2000 as const;
 
 let mock: Form = {
   name: nonEmptyString('Mario'),
@@ -65,12 +66,14 @@ let mock: Form = {
   email: email('rossi.m@gmail.com'),
 };
 
-export const getForm: RepoAction<void, Form> = () =>
-  timer(delay).pipe(map(() => mock));
+@Injectable({ providedIn: 'root' })
+export class EditFormRepository {
+  getForm: RepoAction<void, Form> = () => timer(delay).pipe(map(() => mock));
 
-export const saveForm: RepoAction<Form, void> = (form: Form) =>
-  timer(delay).pipe(
-    map(() => {
-      mock = form;
-    })
-  );
+  saveForm: RepoAction<Form, void> = (form: Form) =>
+    timer(delay).pipe(
+      map(() => {
+        mock = form;
+      })
+    );
+}

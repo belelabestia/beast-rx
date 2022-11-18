@@ -1,22 +1,22 @@
-<!-- <ng-container *ngIf="state | async as s">
+<ng-container *ngIf="rx.state | async as s">
     <p>Edit form ({{s.type}})</p>
     <form>
         <label for="name">Name</label>
         <input type="text" id="name" [value]="s.form.name"
-            (input)="changes.next(actions.form({name: inputString($event)}))">
+            (input)="rx.changes.next(rx.service.form({name: inputString($event)}))">
         <label for="surname">Surname</label>
         <input type="text" id="surname" [value]="s.form.surname"
-            (input)="changes.next(actions.form({surname: inputString($event)}))">
+            (input)="rx.changes.next(rx.service.form({surname: inputString($event)}))">
         <label for="birth">Birth</label>
         <input type="datetime-local" id="birth" [value]="s.form.birth"
-            (input)="changes.next(actions.form({birth: inputDate($event)}))">
+            (input)="rx.changes.next(rx.service.form({birth: inputDate($event)}))">
         <label for="email">Email</label>
         <input type="email" id="email" [value]="s.form.email"
-            (input)="changes.next(actions.form({email: inputString($event)}))">
+            (input)="rx.changes.next(rx.service.form({email: inputString($event)}))">
     </form>
     <div class="actions">
-        <button [disabled]="s.type === 'loading'" (click)="changes.next(actions.reset)">Reset</button>
-        <button [disabled]="s.type === 'loading'" (click)="changes.next(actions.load)">Reload</button>
-        <button [disabled]="s.type !== 'updated'" (click)="changes.next(actions.save)">Save</button>
+        <button [disabled]="s.type === 'loading'" (click)="rx.changes.next(rx.service.reset)">Reset</button>
+        <button [disabled]="s.type === 'loading'" (click)="rx.changes.next(rx.service.load)">Reload</button>
+        <button [disabled]="s.type !== 'updated'" (click)="rx.changes.next(rx.service.save)">Save</button>
     </div>
-</ng-container> -->
+</ng-container>
