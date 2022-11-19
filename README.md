@@ -46,31 +46,31 @@ Call the `provideBeastRx` function passing the `init` function, the _Feature Ser
   selector: "[counter]",
   templateUrl: "./counter.component.html",
   styleUrls: ["./counter.component.css"],
-  providers: provideBeastRx<CounterState, CounterService>(
-    (rx) => rx.service.reset,
-    CounterService
+  providers: provideBeastRx<CounterState, CounterFeature>(
+    (rx) => rx.feature.reset,
+    CounterFeature
   ),
 })
 export class CounterComponent {
-  constructor(protected rx: BeastRx<CounterState, CounterService>) {}
+  constructor(protected rx: BeastRx<CounterState, CounterFeature>) {}
 }
 ```
 
-`counter.service.ts`
+`counter.feature.ts`
 
 ```ts
 @Injectable()
-export class CounterService {
-  incrementBy: ActionFactory<CounterState, CounterService> =
+export class CounterFeature {
+  incrementBy: ActionFactory<CounterState, CounterFeature> =
     (event: Event) => () => ({
       incrementBy: (event.target as HTMLInputElement).valueAsNumber,
     });
 
-  increment: Action<CounterState, CounterService> = ({ state }) => ({
+  increment: Action<CounterState, CounterFeature> = ({ state }) => ({
     currentValue: state.currentValue + state.incrementBy,
   });
 
-  reset: Action<CounterState, CounterService> = () => initialState;
+  reset: Action<CounterState, CounterFeature> = () => initialState;
 }
 ```
 
@@ -109,14 +109,14 @@ export class AppComponent {}
   selector: "[counter]",
   templateUrl: "./counter.component.html",
   styleUrls: ["./counter.component.css"],
-  providers: provideBeastRx<CounterState, CounterService, AppCtx>(
-    (rx) => rx.service.reset,
-    CounterService,
+  providers: provideBeastRx<CounterState, CounterFeature, AppCtx>(
+    (rx) => rx.feature.reset,
+    CounterFeature,
     "counter"
   ),
 })
 export class CounterComponent {
-  constructor(protected rx: BeastRx<CounterState, CounterService>) {}
+  constructor(protected rx: BeastRx<CounterState, CounterFeature>) {}
 }
 ```
 
@@ -133,12 +133,12 @@ Whenever you need to _change_ the state, you just push an `Action<State>` in the
       type="number"
       id="increment-by"
       [value]="s.incrementBy"
-      (input)="rx.actions.next(rx.service.incrementBy($event))"
+      (input)="rx.actions.next(rx.feature.incrementBy($event))"
     />
   </form>
   <div class="actions">
-    <button (click)="rx.actions.next(rx.service.increment)">Increment</button>
-    <button (click)="rx.actions.next(rx.service.reset)">Reset</button>
+    <button (click)="rx.actions.next(rx.feature.increment)">Increment</button>
+    <button (click)="rx.actions.next(rx.feature.reset)">Reset</button>
   </div>
 </ng-container>
 ```
