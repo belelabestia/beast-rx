@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
-import { AppCtx } from 'src/app/app.component';
-import { BeastRx, provide } from 'src/beast-rx/core';
-import { CounterService, CounterState } from './counter.service';
+import { AppCtx } from 'src/app/app.ctx';
+import { BeastRx } from 'src/beast-rx/core';
+import { provideBeastRx } from 'src/beast-rx/providers';
+import { CounterFeature } from './counter.feature';
+import { CounterState } from './counter.state';
 
 @Component({
   selector: '[counter]',
   templateUrl: './counter.component.html',
   styleUrls: ['./counter.component.css'],
-  providers: provide<CounterState, CounterService, AppCtx>(
-    (rx) => rx.service.reset,
-    CounterService,
+  providers: provideBeastRx<CounterState, CounterFeature, AppCtx>(
+    (rx) => rx.feature.reset,
+    CounterFeature,
     'counter'
   ),
 })
 export class CounterComponent {
-  constructor(protected rx: BeastRx<CounterState, CounterService>) {}
+  constructor(protected rx: BeastRx<CounterState, CounterFeature>) {}
 }

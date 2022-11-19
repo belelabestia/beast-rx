@@ -1,12 +1,7 @@
 import { Component, Inject } from '@angular/core';
-import { BeastCtx, LOGGER, Storage } from 'src/beast-rx/core';
-import { CounterState } from '../counter/counter.service';
-import { EditFormState } from '../edit-form/edit-form.service';
-
-interface AppState extends Storage<CounterState | EditFormState> {
-  counter: CounterState;
-  editForm: EditFormState;
-}
+import { AppCtx } from 'src/app/app.ctx';
+import { BeastCtx } from 'src/beast-rx/core';
+import { CONTEXT } from 'src/beast-rx/injection-tokens';
 
 @Component({
   selector: '[summary]',
@@ -14,9 +9,9 @@ interface AppState extends Storage<CounterState | EditFormState> {
   styleUrls: ['./summary.component.css'],
 })
 export class SummaryComponent {
-  constructor(protected ctx: BeastCtx<AppState>) {}
+  constructor(@Inject(CONTEXT) protected ctx: BeastCtx<AppCtx>) {}
 
-  text(state: AppState): string {
+  text(state: AppCtx): string {
     return JSON.stringify(state, null, '  ');
   }
 }

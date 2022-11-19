@@ -1,24 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, timer } from 'rxjs';
-import { Creator } from 'src/beast-rx/brand';
-import {
-  nonEmptyString,
-  Email,
-  NonEmptyString,
-  email,
-} from 'src/beast-rx/validators';
-
-export interface ViewForm {
-  name: string;
-  surname: string;
-  email: string;
-}
-
-export interface Form {
-  name: NonEmptyString | null;
-  surname: NonEmptyString | null;
-  email: Email | null;
-}
+import { Creator } from 'src/utils/brand';
+import { nonEmptyString, email } from 'src/utils/validators';
+import { Form, ViewForm } from './edit-form.state';
 
 export interface RepoAction<A, B> {
   (a: A): Observable<B>;
