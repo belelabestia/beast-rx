@@ -1,59 +1,25 @@
 # BeastRx
 
-This repo is a proof-of-concept/an MVP for a library that aims to make angular fully-reactive with a light API.
+🎉 Welcome to the **BeastRx** repository 🎉
 
-## API
+**BeastRx** is an ultra-light Angular library that enables _full reactivity_.
 
-Declare your state interface and an `Init<State>` function:
+👍 **No mutable state**  
+👍 **Smart change detection**  
+👍 **Fully declarative**  
+👍 **100% reactive**  
+👍 **Only 150 lines of code**
 
-```ts
-interface State {
-  incrementBy: number;
-  currentValue: number;
-}
+---
 
-const initialState: State = {
-  incrementBy: 1,
-  currentValue: 0,
-};
+## _Provide_ a root `BeastCtx`
 
-const init: Init<State> = (_) => initialState;
-```
+## _Provide_ your BeastRx dependencies
 
-Declare and create your actions:
+Call the `provide` function passing the `init` function, the _Feature Service_ and the _Storage Key_.
 
-```ts
-const actions = createActions<State>()({
-  incrementBy: (event: Event) => (state: State) => ({
-    ...state,
-    incrementBy: Number((event as InputEvent).data),
-  }),
-  increment: (state: State) => ({
-    ...state,
-    currentValue: state.currentValue + state.incrementBy,
-  }),
-  reset: (_: State) => initialState,
-});
-```
+> - The `init` function is just a function that returns the first _Action_ that will initialize state.
+> - A _Feature Service_ is a simple class decorated with `@Injectable()`, in other words, an angular service that is not provided in root; it exposes all the _Actions_ or the _Action Factories_ that update state by returning a new state instance.
+> - The _Context Key_ is the key that will be used to select the state from the root `BeastCtx`.
 
-Extend an Angular component with `beastRx` and pass a `ChangeDetectorRef` instance to the `super` constructor:
-
-```ts
-@Component({
-  selector: "[edit-form]",
-  templateUrl: "./edit-form.component.html",
-  styleUrls: ["./edit-form.component.css"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class EditFormComponent extends beastRx(init, actions) {
-  constructor(ref: ChangeDetectorRef) {
-    super(ref);
-  }
-}
-```
-
-## Known issues
-
-- I don't like the `ChangeDetectorRef` dependency, or at least it should be completely handled by `beastRx`.
-- The default strategy should always be `OnPush`; should probably wrap the Angular `Component` decorator instead of making a class factory function.
-- I'd like to separate effects from state actions (and maybe find better naming for the actions).
+##

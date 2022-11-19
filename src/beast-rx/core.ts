@@ -50,8 +50,12 @@ export interface Storage<State> {
 }
 
 export const INIT = new InjectionToken<Action<any, any>>('INIT');
-export const SERVICE = new InjectionToken<ActionRecord<any, any>>('SERVICE');
-export const FIELD = new InjectionToken<string>('FIELD');
+
+export const FEATURE_SERVICE = new InjectionToken<ActionRecord<any, any>>(
+  'FEATURE_SERVICE'
+);
+
+export const CONTEXT_KEY = new InjectionToken<string>('STORAGE_KEY');
 
 export const LOGGER = new InjectionToken<typeof console.log>('LOGGER', {
   providedIn: 'root',
@@ -63,30 +67,44 @@ export const createActions =
   <A extends ActionRecord<State, Service>>(actionRecord: A): A =>
     actionRecord;
 
-export const provide = <State, Service, StorageState>(
+export const provide = <State, Service, Context>(
   init: Init<State, Service>,
-  service: Constructor<Service>,
-  field: keyof StorageState
+  featureService: Constructor<Service>,
+  contextKey: keyof Context
 ): Provider[] => [
   {
     provide: INIT,
     useValue: init,
   },
   {
-    provide: SERVICE,
-    useClass: service,
+    provide: FEATURE_SERVICE,
+    useClass: featureService,
   },
   {
-    provide: FIELD,
-    useValue: field,
+    provide: CONTEXT_KEY,
+    useValue: contextKey,
   },
   BeastRx,
 ];
 
-export const provideLogger = (logger: typeof console.log) => ({
-  provide: LOGGER,
-  useFactory: () => logger ?? console.log,
-});
+export const provideRootBeast = (
+  logger: typeof console.log,
+  rootContext?: Constructor<BeastCtx<any>>
+): Provider[] => [
+  {
+    provide: LOGGER,
+    useFactory: () => logger ?? console.log,
+  },
+  rootContext
+    ? {
+        provide: BeastCtx,
+        useClass: rootContext,
+      }
+    : {
+        provide: BeastCtx,
+        useValue: null,
+      },
+];
 
 @Injectable()
 export class BeastRx<State, Service> {
@@ -97,9 +115,9 @@ export class BeastRx<State, Service> {
     ref: ChangeDetectorRef,
     public ctx: BeastCtx<Storage<State>> | null,
     @Inject(INIT) init: Init<State, Service>,
-    @Inject(SERVICE) public service: Service,
+    @Inject(FEATURE_SERVICE) public service: Service,
     @Inject(LOGGER) public log: typeof console.log,
-    @Inject(FIELD) public field: string
+    @Inject(CONTEXT_KEY) public field: string
   ) {
     const changes = new Subject<Action<State, Service>>();
 

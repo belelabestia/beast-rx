@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AppState } from 'src/app/app.component';
+import { AppCtx } from 'src/app/app.component';
 import { BeastRx, provide } from 'src/beast-rx/core';
 import { CounterService, CounterState } from './counter.service';
 
@@ -7,7 +7,7 @@ import { CounterService, CounterState } from './counter.service';
   selector: '[counter]',
   templateUrl: './counter.component.html',
   styleUrls: ['./counter.component.css'],
-  providers: provide<CounterState, CounterService, AppState>(
+  providers: provide<CounterState, CounterService, AppCtx>(
     (rx) => rx.service.reset,
     CounterService,
     'counter'

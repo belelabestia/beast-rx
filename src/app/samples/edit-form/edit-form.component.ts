@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AppState } from 'src/app/app.component';
+import { AppCtx } from 'src/app/app.component';
 import { BeastRx, provide } from 'src/beast-rx/core';
 import { EditFormService, EditFormState } from './edit-form.service';
 
@@ -7,7 +7,7 @@ import { EditFormService, EditFormState } from './edit-form.service';
   selector: '[edit-form]',
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.css'],
-  providers: provide<EditFormState, EditFormService, AppState>(
+  providers: provide<EditFormState, EditFormService, AppCtx>(
     (rx) => rx.service.load,
     EditFormService,
     'editForm'

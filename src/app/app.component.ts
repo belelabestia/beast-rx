@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { BeastCtx, provideLogger, Storage } from 'src/beast-rx/core';
+import { BeastCtx, provideRootBeast } from 'src/beast-rx/core';
 import { CounterState } from './samples/counter/counter.service';
 import { EditFormState } from './samples/edit-form/edit-form.service';
 
-export interface AppState {
+export interface AppCtx {
   counter: CounterState;
   editForm: EditFormState;
 }
@@ -12,6 +12,6 @@ export interface AppState {
   selector: '[app]',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [BeastCtx<AppState>, provideLogger(console.debug)],
+  providers: [provideRootBeast(console.debug, BeastCtx)],
 })
 export class AppComponent {}
